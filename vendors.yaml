@@ -1,0 +1,44 @@
+vendors:
+  - name: Tim Hortons
+    category: Meals
+    patterns:
+      - "TIM HORTONS"
+
+  - name: Uber
+    category: Transportation
+    patterns:
+      - "UBER *TRIP"
+      - "UBER CANADA*"
+
+  - name: Uber Eats
+    category: Meals
+    patterns:
+      - "UBER EATS*"
+
+  - name: Netflix
+    category: Subscriptions
+    patterns:
+      - "NETFLIX"
+
+  - name: Ding
+    category: Telecom
+    patterns:
+      - "DING"
+
+  - name: Dominos Pizza
+    category: Meals
+    patterns:
+      - "DOMINO'S PIZZA"
+
+  - name: Dollarama
+    category: Others
+    patterns:
+      - "DOLLARAMA*"
+  - name: Winners
+    category: Shopping
+    patterns:
+      - " WINNERS*"
+  - name: Chrono (carte opus)
+    category: Transportation
+    patterns:
+      - "CHRONO-RECHARGE*"

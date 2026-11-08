@@ -1,0 +1,3 @@
+output:
+  error: /home/mrcodage/dev/golang/mrccommunity.com/bookkeping/output/output.err.csv
+  result: /home/mrcodage/dev/golang/mrccommunity.com/bookkeping/output/bookkeeping.csv

@@ -4,6 +4,8 @@ import (
 	"cmp"
 	"fmt"
 	"log"
+	"os"
+	"path"
 	"slices"
 	"strings"
 
@@ -19,6 +21,8 @@ func main() {
 	if len(internal.FileArg) == 0 && len(internal.DirArg) == 0 {
 		synopsis()
 	}
+
+	isDir := len(internal.DirArg) > 0
 
 	if internal.MustVerbose {
 		fmt.Printf(">> file : %s\n", internal.FileArg)
@@ -40,7 +44,22 @@ func main() {
 		fmt.Printf("--- vendors:\n%v\n\n", vendors)
 	}
 
-	transactions, err = parser.Parser(internal.FileArg, configs.Output.ErrorFile)
+	if !isDir {
+		transactions, err = parser.Parser(internal.FileArg, configs.Output.ErrorFile)
+	} else {
+		entry, err := os.ReadDir(internal.DirArg)
+		logAndFail(err)
+		tTemp := make([]*model.Transaction, 1)
+		for _, e := range entry {
+			path := path.Join(internal.DirArg, e.Name())
+			if internal.MustVerbose {
+				fmt.Printf("%v\n", path)
+			}
+			tTemp, err = parser.Parser(path, configs.Output.ErrorFile)
+			transactions = append(transactions, tTemp...)
+		}
+	}
+
 	if err != nil {
 		log.Fatal(err)
 	}

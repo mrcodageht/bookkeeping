@@ -2,10 +2,8 @@ package matcher
 
 import (
 	"bytes"
-	"fmt"
 	"strings"
 
-	"mrccommunity.com/bookkeping/src/internal"
 	"mrccommunity.com/bookkeping/src/internal/model"
 )
 
@@ -41,24 +39,22 @@ func Match(transactions []*model.Transaction, vendors *model.VendorsYAML) {
 				}
 
 				isFinishMatch := bytes.EqualFold(finish, []byte{' '}) || bytes.EqualFold(patternEnd, []byte{'*'}) || isOutOfRange
-				if internal.MustVerbose {
-					fmt.Println(":: DEBUG :: is finish match:", isFinishMatch)
-				}
+
 				if !(bytes.EqualFold(begin, []byte{' '}) && isFinishMatch) {
 					continue
 				}
 
-				t.Vendor = v.Name
-				t.Category = v.Category
-				t.Status = model.Matched
+				t.SetVendor(v.Name)
+				t.SetCategory(v.Category)
+				t.SetStatus(model.Matched)
 				isMatch = true
 				break
 			}
 		}
 		if !isMatch {
-			t.Vendor = unknown.Name
-			t.Category = unknown.Category
-			t.Status = model.Unknown
+			t.SetVendor(unknown.Name)
+			t.SetCategory(unknown.Category)
+			t.SetStatus(model.Unknown)
 		}
 	}
 }

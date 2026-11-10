@@ -11,9 +11,9 @@ type Transaction struct {
 	amount        float64
 	accountNumber string
 
-	Vendor   string
-	Category string
-	Status   Status
+	vendor   string
+	category string
+	status   Status
 }
 
 type Status string
@@ -52,6 +52,26 @@ func (t *Transaction) GetAmount() float64 {
 	return t.amount
 }
 
+func (t *Transaction) GetVendor() string {
+	return t.vendor
+}
+
+func (t *Transaction) SetVendor(val string) {
+	t.vendor = val
+}
+
+func (t *Transaction) SetCategory(val string) {
+	t.category = val
+}
+
+func (t *Transaction) SetStatus(val Status) {
+	t.status = val
+}
+
+func (t *Transaction) GetStatus() Status {
+	return t.status
+}
+
 func (t *Transaction) ToString() string {
-	return fmt.Sprintf("%s \t|\t %50s \t| %8s \t| %5f \t| %10s \t| %15s \t| %6s", t.date, t.description, t.accountNumber, t.amount, t.Vendor, t.Category, t.Status)
+	return fmt.Sprintf("%s \t|\t %50s \t| %8s \t| %5f \t| %10s \t| %15s \t| %6s", t.date, t.description, t.accountNumber, t.amount, t.vendor, t.category, t.status)
 }

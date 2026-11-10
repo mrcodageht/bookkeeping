@@ -1,5 +1,7 @@
 package model
 
+import "fmt"
+
 type Vendor struct {
 	Name     string   `yaml:"name"`
 	Category string   `yaml:"category"`
@@ -16,4 +18,9 @@ func UnknownVendor() *Vendor {
 		Category: "Unknown",
 		Patterns: []string{},
 	}
+}
+
+func (v *Vendor) ToString() string {
+
+	return fmt.Sprintf("%15s \t|\t %20s \t| %s \t", v.Name, v.Category, v.Patterns)
 }

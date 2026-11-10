@@ -21,25 +21,33 @@ func Parser(filePath string, outputErr string) ([]*model.Transaction, error) {
 	if err != nil {
 		return nil, fmt.Errorf("Erreur lors la lecture du fichier %v", err)
 	}
-	println("Reading", file.Name(), "...")
+	log.Println("Reading", file.Name(), "...")
 	defer file.Close()
 	reader := csv.NewReader(file)
+
 	if internal.MustVerbose {
-		log.Println("Debut de la lecture du fichier")
+		print("Parsing file")
 	}
 	for {
+		if internal.MustVerbose {
+			print(".")
+		}
 		var record []string
 		record, err = reader.Read()
 
 		if err == io.EOF {
+			print("done")
+			println()
 			if internal.MustVerbose {
-				log.Println("Fin du fichier")
+				log.Println("Reading...done")
 			}
 			transactions = slices.Clip(transactions)
 			return transactions, nil
 		}
 
 		if err != nil {
+			print(" fail")
+			println()
 			return nil, fmt.Errorf("Erreur lors la lecture du fichier %v", err)
 		}
 		t, err := toTransaction(record)

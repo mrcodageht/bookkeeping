@@ -25,8 +25,14 @@ func main() {
 	isDir := len(internal.DirArg) > 0
 
 	if internal.MustVerbose {
-		fmt.Printf(">> file : %s\n", internal.FileArg)
-		fmt.Printf(">> dir : %s\n", internal.DirArg)
+		if !isDir {
+			println("file :", internal.FileArg)
+		} else {
+			println("dir :", internal.DirArg)
+		}
+		if len(internal.FilterArg) > 0 {
+			println("filter :", internal.FilterArg)
+		}
 	}
 	var transactions []*model.Transaction
 	var err error
@@ -41,7 +47,10 @@ func main() {
 
 	if internal.MustVerbose {
 		fmt.Printf("--- configs:\n%v\n\n", configs)
-		fmt.Printf("--- vendors:\n%v\n\n", vendors)
+		log.Println("--- vendors")
+		for _, v := range vendors.Vendors {
+			fmt.Println((&v).ToString())
+		}
 	}
 
 	if !isDir {
@@ -53,9 +62,10 @@ func main() {
 		for _, e := range entry {
 			path := path.Join(internal.DirArg, e.Name())
 			if internal.MustVerbose {
-				fmt.Printf("%v\n", path)
+				log.Printf("Found %v\n", path)
 			}
 			tTemp, err = parser.Parser(path, configs.Output.ErrorFile)
+
 			transactions = append(transactions, tTemp...)
 		}
 	}
@@ -65,6 +75,13 @@ func main() {
 	}
 
 	matcher.Match(transactions, vendors)
+
+	if !isBlank(internal.FilterArg) {
+		if internal.MustVerbose {
+			log.Printf("Applying filter [%s]", internal.FilterArg)
+		}
+		transactions = filter(transactions, internal.FilterArg)
+	}
 	nbMatched := 0
 	nbUnknown := 0
 	totalPriceMatched := 0.00
@@ -72,7 +89,7 @@ func main() {
 	totalPrice := 0.00
 
 	for _, t := range transactions {
-		if t.Status == model.Matched {
+		if t.GetStatus() == model.Matched {
 			nbMatched++
 			totalPriceMatched += t.GetAmount()
 		} else {
@@ -117,4 +134,18 @@ func logAndFail(err error) {
 	if err != nil {
 		log.Fatal(err)
 	}
+}
+
+func isBlank(val string) bool {
+	return len(val) < 1
+}
+
+func filter(transactions []*model.Transaction, f string) []*model.Transaction {
+	tmp := make([]*model.Transaction, 0)
+	for _, t := range transactions {
+		if strings.EqualFold(t.GetVendor(), f) {
+			tmp = append(tmp, t)
+		}
+	}
+	return slices.Clip(tmp)
 }

@@ -15,7 +15,16 @@ import (
 	"mrccommunity.com/bookkeping/src/internal/parser"
 )
 
+const app_name = "Bookkeeping"
+
 func main() {
+	greeting := func() {
+		fmt.Println(strings.Repeat("*", len(app_name)+4))
+		fmt.Println("*", app_name, "*")
+		fmt.Println(strings.Repeat("*", len(app_name)+4))
+	}
+
+	greeting()
 
 	internal.ReadFlag()
 	if len(internal.FileArg) == 0 && len(internal.DirArg) == 0 {
@@ -80,7 +89,16 @@ func main() {
 		if internal.MustVerbose {
 			log.Printf("Applying filter [%s]", internal.FilterArg)
 		}
-		transactions = filter(transactions, internal.FilterArg)
+		filter := func(f string) []*model.Transaction {
+			tmp := make([]*model.Transaction, 0)
+			for _, t := range transactions {
+				if strings.EqualFold(t.GetVendor(), f) {
+					tmp = append(tmp, t)
+				}
+			}
+			return slices.Clip(tmp)
+		}
+		transactions = filter(internal.FilterArg)
 	}
 	nbMatched := 0
 	nbUnknown := 0
@@ -138,14 +156,4 @@ func logAndFail(err error) {
 
 func isBlank(val string) bool {
 	return len(val) < 1
-}
-
-func filter(transactions []*model.Transaction, f string) []*model.Transaction {
-	tmp := make([]*model.Transaction, 0)
-	for _, t := range transactions {
-		if strings.EqualFold(t.GetVendor(), f) {
-			tmp = append(tmp, t)
-		}
-	}
-	return slices.Clip(tmp)
 }

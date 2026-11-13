@@ -2,7 +2,7 @@ package internal
 
 import (
 	"flag"
-	"go/build"
+	"log"
 	"os"
 	"path"
 	"strings"
@@ -31,9 +31,9 @@ func ReadFlag() {
 }
 
 func GetBase() string {
-	gopath := os.Getenv("GOPATH")
-	if gopath == "" {
-		gopath = build.Default.GOPATH
+	currentDir, err := os.Getwd()
+	if err != nil {
+		log.Fatal(err)
 	}
-	return path.Join(gopath, "mrccommunity.com", "bookkeeping")
+	return currentDir
 }

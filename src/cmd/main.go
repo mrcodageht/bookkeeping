@@ -17,6 +17,9 @@ import (
 
 func main() {
 
+	base := internal.GetBase()
+
+	fmt.Println(base)
 	internal.ReadFlag()
 	if len(internal.FileArg) == 0 && len(internal.DirArg) == 0 {
 		synopsis()
@@ -39,10 +42,10 @@ func main() {
 	var vendors *model.VendorsYAML
 	var configs *model.Config
 
-	configs, err = internal.LoadConfig("../bookkeping/configs.yaml")
+	configs, err = internal.LoadConfig(internal.ConfigArg)
 	logAndFail(err)
 
-	vendors, err = internal.LoadVendor(internal.VendorArg)
+	vendors, err = internal.LoadVendor(internal.VendorsArg)
 	logAndFail(err)
 
 	if internal.MustVerbose {
